@@ -1,0 +1,439 @@
+{
+	"info": {
+		"_postman_id": "cebcc9eb-5448-42f2-937e-80e8414c5c27",
+		"name": "PBFT Implementation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26209860",
+		"_collection_link": "https://interstellar-spaceship-332993.postman.co/workspace/Cuboid-Tool~88c1b81e-5154-436a-9f49-20ddffc03c26/collection/26209860-cebcc9eb-5448-42f2-937e-80e8414c5c27?action=share&source=collection_link&creator=26209860"
+	},
+	"item": [
+		{
+			"name": "Generate Key Pair",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/generate/keypair",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"generate",
+						"keypair"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/get/key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"get",
+						"key"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Receive Key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"server\":8080,\r\n    \"publicKey\":\"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApZAncP8cgRDKGx2uxiFy935mV4NxECwujdQWcfcmlpKSM1AhWFBVePiUXlLDvIFmWltuwZS7Ib2U6LlvNM10u1hfYhDc5aCG2WgFDqXlS8vii2TKuaC1O6MET7TesuvLuHeKHK/LQ8fqvxXiBZavFAtoZHB0al5jh1Ml5OVXZB498KKUAMCgxVXH2XWIw3v9FUrZK7TqQVsrzH7IHo8s8gZUZTg+TWryfhv5KTIC5x8/WuMy0zcZTeb1W/aoOs5dMLC8kvdogA7/CJLvqm/00gPnur4xa9eCACIk7wduJ74pStREbQGaoDU4yuFr8aaC+c2PS/dNjwB2TpogTdJhLQIDAQAB\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/receive/key",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"receive",
+						"key"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Print Peer Keys",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/print/keys",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"print",
+						"keys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Disconnect Servers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[1]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/servers/disconnect",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"servers",
+						"disconnect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Disconnected Servers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/servers/disconnected",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"servers",
+						"disconnected"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Byzantine Servers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[1]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/servers/byzantine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"servers",
+						"byzantine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Byzantine Servers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/servers/byzantine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"servers",
+						"byzantine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Keys from Peers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/servers/publickeys",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"servers",
+						"publickeys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Preprepare Log",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/log/preprepare",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"log",
+						"preprepare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Prepare Log",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/api/log/prepare",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"log",
+						"prepare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Commit Log",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/log/commit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"log",
+						"commit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Executed Log",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/log/executed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"log",
+						"executed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Format Preprepare Logs",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/f/pp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"f",
+						"pp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get View Change Logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/logs/view-change",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"logs",
+						"view-change"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get New View Logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8080/api/logs/new-view",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"logs",
+						"new-view"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Datastore of particular server",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/bank/datastore",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"bank",
+						"datastore"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status of particular sequence Number in the server",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/api/status/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"api",
+						"status",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Check Pointed Logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/logs/checkpoint/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"logs",
+						"checkpoint",
+						"all"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
