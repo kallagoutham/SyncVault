@@ -71,6 +71,9 @@ This project focuses on implementing a variant of the Practical Byzantine Fault 
 4. **PrintView()**: Displays NEW-VIEW messages exchanged during view changes.
 5. **Performance()**: Measures throughput and latency of the system.
 
+### Communication Among Servers
+  I have used TCP/HTTP for communication among servers. I am providing postman collection file of API endpoints that I developed for the communication among PBFT Servers under lab2_resources.
+  
 ### Input Format
 - Input files should be CSV files with columns:
   1. **Set Number**: Identifier for the test case.
