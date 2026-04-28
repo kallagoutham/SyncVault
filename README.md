@@ -1,138 +1,189 @@
-# Implementing the Linear-PBFT Protocol
+# SyncVault PBFT Ledger
 
-## Project Overview
-This project focuses on implementing a variant of the Practical Byzantine Fault Tolerance (PBFT) protocol, known as Linear-PBFT. Unlike PBFT, Linear-PBFT reduces the communication complexity of the prepare and commit phases to linear levels while maintaining the fault-tolerance properties of PBFT.
+An implementation of a **PBFT-inspired** distributed banking ledger with linear-style consensus and secure state replication.
 
-### Objectives
-- Develop a distributed banking application using the Linear-PBFT protocol.
-- Implement the normal case operation and view-change routine of Linear-PBFT.
-- Handle Byzantine nodes and ensure consensus despite faults.
-- Optimize throughput and latency.
+## Overview
 
-## Features and Functionality
+This project models a replicated banking system where client transactions are ordered and executed across multiple servers even when some nodes fail or behave maliciously. It brings a PBFT touch to a banking ledger by keeping consensus fault-tolerant while reducing communication overhead in the prepare/commit path.
 
-### Core Features
-1. **Consensus Mechanism**:
-   - Implements the Linear-PBFT protocol for fault-tolerant consensus.
-   - Supports Byzantine leader and replica detection.
-2. **Distributed Banking Application**:
-   - All servers maintain a replicated log of client transactions.
-   - Uses a key-value store to maintain client balances.
-3. **Fault Tolerance**:
-   - Handles Byzantine leader and replica behaviors.
-   - Supports view changes to elect a new leader when failures are detected.
-4. **Performance Metrics**:
-   - Measures throughput and latency.
-5. **Signatrure and Hashing**:
-   - At every stage of communication among servers. Hash(SHA256) is created for every message and the digest is Signed with RSA Key and sent over the network to ensure integrity when data is transmitted over a unreliable network.
-    
-### Additional Functions
-- **PrintLog**: Outputs the log of a given server.
-- **PrintDB**: Displays the current key-value datastore.
-- **PrintStatus**: Reports the transaction status (e.g., Pre-prepared, Prepared, Committed, Executed).
-- **PrintView**: Shows all NEW-VIEW messages exchanged during the protocol.
+The application keeps a replicated transaction log, maintains account balances in a shared datastore, and exposes HTTP endpoints for PBFT message exchange, server state inspection, and performance tracking.
 
-## System Description
+## Why this name?
 
-### Architecture
-- **Clients and Servers**:
-  - 7 servers (3f + 1) where f = 2.
-  - 10 clients send transactions to the leader or any server acting as the leader.
-- **Transaction Processing**:
-  - Transactions are submitted in the format `(S, R, amt)` where `S` is the sender, `R` is the receiver, and `amt` is the amount to transfer.
-  - All nodes validate and process requests to ensure fault tolerance.
+If you want a trendier name than just `linear-pbft`, I recommend **SyncVault PBFT Ledger**. It communicates:
 
-### Linear-PBFT Protocol
-1. **Normal Case Operation**:
-   - Linear communication phases replace the quadratic prepare and commit phases.
-   - A collector node (typically the leader) aggregates and broadcasts certificates for authentication.
-2. **View Change**:
-   - Initiates when the leader is suspected to be faulty.
-   - New leaders propose NEW-VIEW messages to ensure continuity.
-3. **Checkpointing (Optional)**:
-   - Used to garbage-collect completed consensus instances and restore replicas.
+- the secure ledger idea (`Vault`)
+- the synchronization of replicas (`Sync`)
+- the PBFT consensus foundation (`PBFT`)
 
-### Datastore Structure
-- Represented as a key-value store with:
-  - Account balances.
-  - Metadata for processed transactions.
+Other good options are:
 
-## Implementation Details
+- `SyncVault PBFT`
+- `PBFT SyncVault`
+- `SyncVault Ledger`
 
-### Prescribed Conditions
-- The system should:
-  - Support 10 clients and 7 servers.
-  - Allow complete reset between test cases to simulate independent scenarios.
+## Key Features
 
-### Functions
-1. **PrintLog(Server)**: Displays the metadata of all requests processed by the specified server.
-2. **PrintDB()**: Outputs the current key-value datastore state.
-3. **PrintStatus(Sequence Number)**: Reports the status of a transaction across servers.
-4. **PrintView()**: Displays NEW-VIEW messages exchanged during view changes.
-5. **Performance()**: Measures throughput and latency of the system.
+- **PBFT fault tolerance**: handles faulty or malicious replicas through PBFT-style message exchange and view changes.
+- **Linearized consensus flow**: reduces the communication cost of agreement compared with a classic quadratic PBFT design.
+- **Replicated banking ledger**: stores account balances and transaction history across servers.
+- **View change support**: allows the system to move to a new leader when the current leader fails or is suspected to be faulty.
+- **Performance tracking**: reports latency, throughput, and total processed tasks.
+- **Message integrity**: uses SHA-256 hashing and RSA-based signatures for request protection.
+- **Checkpoint/log inspection**: exposes endpoints to inspect logs, datastore state, and view-change records.
 
-### Communication Among Servers
-  I have used TCP/HTTP for communication among servers. I am providing postman collection file of API endpoints that I developed for the communication among PBFT Servers under lab2_resources.
-  
-### Input Format
-- Input files should be CSV files with columns:
-  1. **Set Number**: Identifier for the test case.
-  2. **Transactions**: List of transactions in the format `(Sender, Receiver, Amount)`.
-  3. **Live Servers**: List of active servers for the transaction set.
-  4. **Byzantine Servers**: List of servers exhibiting Byzantine behavior.
+## Architecture
 
-#### Example Input
+### Components
+
+- **Spring Boot server**: exposes REST endpoints for PBFT message exchange and inspection.
+- **Controllers**: handle transactions, server state, signatures, and PBFT protocol messages.
+- **Services**: implement the protocol flow, persistence logic, and performance metrics.
+- **H2 in-memory database**: stores replicated banking data during execution.
+- **Utilities**: provide hashing, RSA key generation, peer coordination, and threshold-signature helpers.
+
+### Runtime model
+
+- The system is configured for **7 PBFT servers** (`3f + 1` for `f = 2`).
+- Client inputs are processed as banking transfers between accounts.
+- Each request goes through PBFT-style stages such as `pre-prepare`, `prepare`, `commit`, and execution.
+- View-change endpoints support recovery when the leader or replicas are unavailable.
+
+## Repository Structure
+
+- `pbft/` — Spring Boot application and protocol implementation
+- `lab_2_resources/` — client driver, CSV inputs, and Postman collection
+- `Recording and Report/` — project notes and submission material
+- `README.md` — project documentation
+
+## Main API Endpoints
+
+The app uses `/api` as the base context path.
+
+### Transaction and state
+
+- `GET /api/bank/datastore` — view the current account datastore
+- `GET /api/bank/local/log` — view the local transaction log
+- `POST /api/bank/transaction` — submit a banking transaction
+- `GET /api/status/{sequenceNumber}` — inspect the status of a request by sequence number
+- `GET /api/bank/performance` — view latency and throughput metrics
+
+### PBFT protocol
+
+- `POST /api/preprepare`
+- `POST /api/prepare`
+- `POST /api/optimisticcommit`
+- `POST /api/commit`
+- `POST /api/initiate/view/change`
+- `POST /api/view/change`
+- `POST /api/new/view`
+- `GET /api/log/preprepare`
+- `GET /api/log/prepare`
+- `GET /api/log/commit`
+- `GET /api/log/executed`
+- `GET /api/logs/view-change`
+- `GET /api/logs/new-view`
+- `GET /api/logs/all`
+- `GET /api/logs/checkpoint/all`
+
+### Server and signature utilities
+
+- `POST /api/servers/disconnect`
+- `GET /api/servers/disconnected`
+- `POST /api/servers/byzantine`
+- `GET /api/servers/byzantine`
+- `GET /api/servers/publickeys`
+- `POST /api/reset`
+- `POST /api/generate/keypair`
+- `GET /api/get/key`
+- `POST /api/receive/key`
+- `GET /api/print/keys`
+
+## Input Format
+
+Test cases are provided as CSV files in `lab_2_resources/`.
+
+Expected columns:
+
+1. **Set Number** — test case identifier
+2. **Transactions** — semicolon-separated transfers in the form `(Sender, Receiver, Amount)`
+3. **Live Servers** — list of active servers for the test case
+4. **Byzantine Servers** — list of servers that should behave maliciously or incorrectly
+
+### Example
+
 ```csv
-Set Number, Transactions, Live Servers, Byzantine Servers
-1, (A, C, 1); (C, E, 2), [S1, S2, S3, S4, S5, S6, S7], [S4, S6]
-2, (A, E, 6); (C, A, 7), [S1, S2, S3, S5, S6, S7], [S3]
+Set Number,Transactions,Live Servers,Byzantine Servers
+1,"(A, C, 1); (C, E, 2)",[S1, S2, S3, S4, S5, S6, S7],[S4, S6]
+2,"(A, E, 6); (C, A, 7)",[S1, S2, S3, S5, S6, S7],[S3]
 ```
 
-## Setup Instructions
+## Setup
 
-### Repository Setup
-1. Clone the GitHub repository:
-   ```bash
-   https://github.com/kallagoutham/linear-pbft.git
-   ```
-2. Run 7 PBFT servers on different ports(i.e.,8080,8081,8082,8083,8084,8085,8086).
-3. Compile Client.java and run Client.class file. Then a menu will be appeared give options as per required in order to run and evaluate the results.
-4. A sample test cases (.csv) file is provided under lab2_resources folder.
+### Prerequisites
 
-### Running the Program
-1. Prepare an input file with the required transaction format.
-2. Execute the program to process transactions sequentially.
-3. Use functions (`PrintLog`, `PrintDB`, `PrintStatus`, `PrintView`) to monitor system states.
+- Java 17
+- Maven Wrapper (`./mvnw`) or Maven
+- 7 local ports available, typically `8080` through `8086`
 
-## Testing
+### Run the server
 
-### Test Cases
-1. Valid transactions processed with Byzantine behavior.
-2. Fault tolerance during leader failures.
-3. View changes triggered by timeout or errors.
-4. System reset between independent test cases.
+From the `pbft/` directory, start one instance per port. For example:
 
-### Example Input File
-```csv
-Set Number, Transactions, Live Servers, Byzantine Servers
-1, (A, C, 1); (C, E, 2), [S1, S2, S3, S4, S5, S6, S7], [S4, S6]
-2, (A, E, 6); (C, A, 7), [S1, S2, S3, S5, S6, S7], [S3]
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--server.port=8080"
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--server.port=8081"
 ```
 
-## Bonus Features
-- [x] **Checkpointing Mechanism**:
-   - Decentralized garbage collection of old data.
-   - Synchronization of dark replicas.
-- [ ] **Threshold Signatures**:
-   - Replace individual signatures with a single threshold signature to reduce overhead.
-- [x] **Optimistic Phase Reduction**:
-   - Eliminate additional phases during non-faulty operation.
+Repeat until all 7 server instances are running on `8080`–`8086`.
+
+### Run the client
+
+The client driver is located in `lab_2_resources/Client.java`.
+
+```bash
+cd lab_2_resources
+javac Client.java
+java Client
+```
+
+Use the menu in the client to trigger the required test cases and protocol actions.
+
+## Configuration
+
+The default server settings live in `pbft/src/main/resources/application.properties`.
+
+- Default port: `8080`
+- Context path: `/api`
+- Database: in-memory H2 (`jdbc:h2:mem:testdb`)
+- H2 console: enabled at `/h2-console`
+
+## Observability
+
+Useful inspection endpoints include:
+
+- transaction log and datastore views
+- per-sequence status lookup
+- PBFT phase logs
+- view-change and new-view traces
+- performance metrics for latency and throughput
+
+These are especially helpful when validating Byzantine scenarios, leader failures, and resets between test cases.
+
+## Notes
+
+- The repository includes a Postman collection in `lab_2_resources/PBFT Implementation.postman_collection.json` for testing the API flow.
+- The code currently focuses on the banking workload and protocol mechanics rather than a general-purpose PBFT framework.
+- Checkpointing and threshold-signature support are present as part of the project direction, with some features depending on the current implementation state.
 
 ## References
-- "Practical Byzantine Fault Tolerance" by Miguel Castro and Barbara Liskov.
-- PBFT lecture notes.
-- [GitHub Setup Instructions](https://docs.github.com/en/get-started/getting-started-with-git/set-up-git)
 
-👨‍💻 **Kalla Goutham**    
+- Miguel Castro and Barbara Liskov, *Practical Byzantine Fault Tolerance*
+- PBFT lecture notes and course material
+- GitHub documentation: <https://docs.github.com/en/get-started/getting-started-with-git/set-up-git>
+
+---
+
+👨‍💻 **Kalla Goutham**  
 🌐 [Website](https://gouthamkalla.netlify.app/) | [LinkedIn](https://www.linkedin.com/in/goutham-kalla-3b6133112/) | [GitHub](https://github.com/kallagoutham)  
 ✉️ Reach me at: kallagoutham33@gmail.com
